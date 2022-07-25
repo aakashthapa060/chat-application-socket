@@ -18,13 +18,14 @@
   <body>
     <ul id="messages"></ul>
     <form id="form" action="">
-      <input id="input" autocomplete="off" />
+      <input id="input" name="nickname" id="nickname" placeholder = "nickname" autocomplete="off" />
+      <input id="input" name ="msg" id="msg" autocomplete="off" />
       <button id="sumbitBtn">Send</button>
     </form>
   </body>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    let socket = io("http://localhost:8000/");
+    let socket = io("http://localhost:8080/");
 
     let messages = document.getElementById("messages");
     let form = document.getElementById("form");
@@ -34,15 +35,20 @@
 
     sumbitBtn.addEventListener("click", function(e) {
         e.preventDefault();
-        if(input.value){
-            socket.emit("chat message", input.value);
-            input.value = "";
+        if(form.nickname.value && form.msg.value){
+            const msg = {
+                nickname: form.nickname.value,
+                message: form.msg.value
+            }
+            socket.emit("chat message", msg);
+            form.msg.value = "";
+
         }
     });
 
     socket.on("chat message", function(msg) {
         let item = document.createElement("li");
-        item.textContent = msg;
+        item.textContent = `${msg.nickname}: ${msg.message}`;
         messages.appendChild(item);
         window.scrollTo(0,document.body.scrollHeight);
     })

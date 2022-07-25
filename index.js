@@ -11,12 +11,14 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-    socket.on("chat message", (msg) => {
-        io.emit("chat message", msg);
-    })
+  socket.on("chat message", msg => {
+      socket.broadcast.emit("chat message", msg)
+  })
+
+
 });
 
-const PORT = 8000;
+const PORT = 8080;
 server.listen(PORT, () => {
-  console.log('listening on *:8000');
+  console.log('listening on *:8080');
 });
